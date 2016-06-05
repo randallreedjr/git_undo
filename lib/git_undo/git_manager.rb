@@ -16,12 +16,43 @@ class GitManager
   end
 
   def last_command
-    @command_list.last
+    @last_command ||= @command_list.last
+  end
+
+  def parse_command(command)
+    tokens = command.split(' ')
+    action = tokens[1]
+    arguments = tokens[2..-1].join(' ')
+    return { action: action, arguments: arguments }
+  end
+
+  def undo_command(action, arguments)
+    return "git " +
+    case action
+    when 'add'
+      "reset #{arguments}"
+    end
+  end
+
+  def undo_message(command)
+    command_hash = parse_command(command)
+    undo = undo_command(command_hash[:action], command_hash[:arguments])
+    puts "To undo, run `#{undo}`\nWould you like to run this command now? (y/n)"
+    option = gets.chomp.downcase
+    if option == 'y'
+      puts undo
+      %x[ #{undo} ]
+    end
   end
 
   def run
     get_commands
-    puts "Last git command was: `#{last_command}`"
+    if last_command
+      puts "Last git command was: `#{last_command}`"
+      undo_message(last_command)
+    else
+      puts "No git commands found!"
+    end
   end
 
   def self.setup
@@ -63,6 +94,8 @@ class GitManager
     unless alias_exists
       file.write("# Git Undo\n")
       file.write("alias gitundo=\"HISTFILE=$HISTFILE gitundo\"\n")
+      file.write("# Flush history immediately")
+      file.write("export PROMPT_COMMAND='history -a")
       puts "Please run `source ~/.bash_profile && cd .` to reload configuration"
     end
     file.close
