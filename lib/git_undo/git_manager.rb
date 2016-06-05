@@ -1,4 +1,10 @@
+require 'pry'
+
 class GitManager
+  def valid_commands
+    ['add','commit']
+  end
+
   def initialize(history_file)
     @history_file = history_file
     @command_list = []
@@ -16,7 +22,16 @@ class GitManager
   end
 
   def last_command
-    @last_command ||= @command_list.last
+    last = ''
+    index = @command_list.length - 1
+    while last.empty? && index >= 0
+      command = parse_command(@command_list[index])[:action]
+      if valid_commands.include?(command)
+        last = @command_list[index]
+      end
+      index -= 1
+    end
+    return last
   end
 
   def parse_command(command)
@@ -27,21 +42,26 @@ class GitManager
   end
 
   def undo_command(action, arguments)
-    return "git " +
     case action
     when 'add'
-      "reset #{arguments}"
+      "git reset #{arguments}"
+    when 'commit'
+      "git reset --soft HEAD~"
     end
   end
 
   def undo_message(command)
     command_hash = parse_command(command)
     undo = undo_command(command_hash[:action], command_hash[:arguments])
-    puts "To undo, run `#{undo}`\nWould you like to run this command now? (y/n)"
-    option = gets.chomp.downcase
-    if option == 'y'
-      puts undo
-      %x[ #{undo} ]
+    if !undo
+      puts "Sorry, I don't know how to undo that command"
+    else
+      puts "To undo, run `#{undo}`\nWould you like to automatically run this command now? (y/n)"
+      option = gets.chomp.downcase
+      if option == 'y'
+        puts undo
+        %x[ #{undo} ]
+      end
     end
   end
 
