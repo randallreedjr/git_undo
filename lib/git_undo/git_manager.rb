@@ -105,7 +105,7 @@ class GitManager
 
     unless alias_exists
       file.write("# Git Undo\n")
-      file.write("alias gitundo=\"HISTFILE=$HISTFILE gitundo\"\n")
+      file.write("alias git-undo=\"HISTFILE=$HISTFILE git-undo\"\n")
       file.write("# Flush history immediately")
       file.write("export PROMPT_COMMAND='history -a")
       puts "Please run `source ~/.bash_profile && cd .` to reload configuration"
