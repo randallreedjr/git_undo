@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
   spec.license       = "MIT"
 
   spec.files         = ['lib/git_undo/git_manager.rb','config/environment.rb']
-  spec.executables   << 'gitundo'
+  spec.executables   << 'git-undo'
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 1.11"
