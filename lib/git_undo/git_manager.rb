@@ -1,9 +1,7 @@
 require 'pry'
 
 class GitManager
-  def valid_commands
-    ['add','commit','merge']
-  end
+  VALID_COMMANDS = ['add','commit','merge','checkout','co']
 
   def initialize(history_file)
     @history_file = history_file
@@ -36,7 +34,7 @@ class GitManager
     index = @command_list.length - 1
     while last.empty? && index >= 0
       command = parse_command(@command_list[index])[:action]
-      if valid_commands.include?(command)
+      if VALID_COMMANDS.include?(command)
         last = @command_list[index]
       end
       index -= 1
@@ -59,6 +57,8 @@ class GitManager
       "git reset --soft HEAD~"
     when 'merge'
       "git reset --merge ORIG_HEAD"
+    when 'checkout','co'
+      "git checkout -"
     end
   end
 
