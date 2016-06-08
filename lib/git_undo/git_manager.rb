@@ -1,7 +1,7 @@
 require 'pry'
 
 class GitManager
-  VALID_COMMANDS = ['add','commit','merge','checkout','co']
+  VALID_COMMANDS = ['add','commit','merge','checkout','co', 'rebase']
 
   def initialize(history_file)
     @history_file = history_file
@@ -65,6 +65,21 @@ class GitManager
         undo_command += " && git branch -D #{branch_name}"
       end
       undo_command
+    when 'rebase'
+      if !arguments.include?('-i')
+        current_branch_command = 'git rev-parse --abbrev-ref HEAD'
+        branch_name = %x[ #{current_branch_command} ].chomp
+
+        fetch_old_state = "git checkout #{branch_name}@{1}"
+        delete_branch = "git branch -D #{branch_name}"
+        recreate_branch = "git checkout -b #{branch_name}"
+
+        undo_command = "git checkout #{branch_name}@{1}"
+        undo_command += " && git branch -D #{branch_name}"
+        undo_command += " && git checkout -b #{branch_name}"
+
+        undo_command
+      end
     end
   end
 
