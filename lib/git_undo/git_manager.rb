@@ -58,7 +58,13 @@ class GitManager
     when 'merge'
       "git reset --merge ORIG_HEAD"
     when 'checkout','co'
-      "git checkout -"
+      undo_command = "git checkout -"
+      if arguments.start_with?('-b')
+        #also delete branch
+        branch_name = arguments.split.last
+        undo_command += " && git branch -D #{branch_name}"
+      end
+      undo_command
     end
   end
 
