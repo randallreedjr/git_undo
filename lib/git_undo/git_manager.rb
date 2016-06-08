@@ -10,6 +10,16 @@ class GitManager
     @command_list = []
   end
 
+  def run
+    get_commands
+    if last_command
+      puts "Last git command was: `#{last_command}`"
+      undo_message(last_command)
+    else
+      puts "No git commands found!"
+    end
+  end
+
   def get_commands
     File.open(@history_file) do |file|
       file.each do |line|
@@ -67,51 +77,4 @@ class GitManager
     end
   end
 
-  def run
-    get_commands
-    if last_command
-      puts "Last git command was: `#{last_command}`"
-      undo_message(last_command)
-    else
-      puts "No git commands found!"
-    end
-  end
-
-  def self.setup
-    puts "It looks like you haven't run the initial setup. Would you like to do so now? (y/N)"
-    if gets.chomp.downcase == 'y'
-      puts "This will involve appending an alias to your .bash_profile. Okay to proceed? (y/N)"
-      if gets.chomp.downcase == 'y'
-        puts "Thanks!"
-        update_bash_profile
-      else
-        puts "Goodbye!"
-      end
-    else
-      puts "Goodbye!"
-    end
-  end
-
-  def self.update_bash_profile
-    alias_exists = false
-
-    file = File.open(File.expand_path('~' + '/.bash_profile'),'r+')
-
-    file.readlines.each do |line|
-      if /\A[\s]*alias/.match line
-        if /\A[\s]*alias gitundo="HISTFILE=\$HISTFILE gitundo"\n\z/.match line
-          alias_exists = true
-        end
-      end
-    end
-
-    unless alias_exists
-      file.write("# Git Undo\n")
-      file.write("alias git-undo=\"HISTFILE=$HISTFILE git-undo\"\n")
-      file.write("# Flush history immediately")
-      file.write("export PROMPT_COMMAND='history -a")
-      puts "Please run `source ~/.bash_profile && cd .` to reload configuration"
-    end
-    file.close
-  end
 end

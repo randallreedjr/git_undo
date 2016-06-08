@@ -5,5 +5,5 @@ require_relative '../config/environment.rb'
 if history_file = ENV['HISTFILE']
   GitManager.new(history_file).run
 else
-  GitManager.setup
+  GitSetup.new.run
 end
