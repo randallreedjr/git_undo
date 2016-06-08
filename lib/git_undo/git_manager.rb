@@ -56,7 +56,7 @@ class GitManager
     if !undo
       puts "Sorry, I don't know how to undo that command"
     else
-      puts "To undo, run `#{undo}`\nWould you like to automatically run this command now? (y/n)"
+      puts "To undo, run `#{undo}`\nWould you like to automatically run this command now? (y/N)"
       option = gets.chomp.downcase
       if option == 'y'
         puts undo
@@ -76,9 +76,9 @@ class GitManager
   end
 
   def self.setup
-    puts "It looks like you haven't run the initial setup. Would you like to do so now (y/n)?"
+    puts "It looks like you haven't run the initial setup. Would you like to do so now? (y/N)"
     if gets.chomp.downcase == 'y'
-      puts "This will involve appending an alias to your .bash_profile. Okay to proceed?"
+      puts "This will involve appending an alias to your .bash_profile. Okay to proceed? (y/N)"
       if gets.chomp.downcase == 'y'
         puts "Thanks!"
         update_bash_profile
