@@ -2,7 +2,7 @@ require 'pry'
 
 class GitManager
   def valid_commands
-    ['add','commit']
+    ['add','commit','merge']
   end
 
   def initialize(history_file)
@@ -47,6 +47,8 @@ class GitManager
       "git reset #{arguments}"
     when 'commit'
       "git reset --soft HEAD~"
+    when 'merge'
+      "git reset --merge ORIG_HEAD"
     end
   end
 
