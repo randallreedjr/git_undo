@@ -1,8 +1,6 @@
 require 'pry'
 
 class GitManager
-  VALID_COMMANDS = ['add','commit','merge','checkout','co', 'rebase']
-
   def initialize(history_file)
     @history_file = history_file
     @command_list = []
@@ -34,7 +32,7 @@ class GitManager
     index = @command_list.length - 1
     while last.empty? && index >= 0
       command = parse_command(@command_list[index])[:action]
-      if VALID_COMMANDS.include?(command)
+      if GitReverser::VALID_COMMANDS.include?(command)
         last = @command_list[index]
       end
       index -= 1
@@ -50,36 +48,19 @@ class GitManager
   end
 
   def undo_command(action, arguments)
+    reverser = GitReverser.new(arguments)
+
     case action
     when 'add'
-      "git reset #{arguments}"
+      reverser.reverse_add
     when 'commit'
-      "git reset --soft HEAD~"
+      referser.reverse_commit
     when 'merge'
-      "git reset --merge ORIG_HEAD"
+      reverser.reverse_merge
     when 'checkout','co'
-      undo_command = "git checkout -"
-      if arguments.start_with?('-b')
-        #also delete branch
-        branch_name = arguments.split.last
-        undo_command += " && git branch -D #{branch_name}"
-      end
-      undo_command
+      reverser.reverse_checkout
     when 'rebase'
-      if !arguments.include?('-i')
-        current_branch_command = 'git rev-parse --abbrev-ref HEAD'
-        branch_name = %x[ #{current_branch_command} ].chomp
-
-        fetch_old_state = "git checkout #{branch_name}@{1}"
-        delete_branch = "git branch -D #{branch_name}"
-        recreate_branch = "git checkout -b #{branch_name}"
-
-        undo_command = "git checkout #{branch_name}@{1}"
-        undo_command += " && git branch -D #{branch_name}"
-        undo_command += " && git checkout -b #{branch_name}"
-
-        undo_command
-      end
+      reverser.reverse_rebase
     end
   end
 
