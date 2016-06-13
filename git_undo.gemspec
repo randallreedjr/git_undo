@@ -14,7 +14,13 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/randallreedjr/git_undo"
   spec.license       = "MIT"
 
-  spec.files         = ['lib/git_undo/git_manager.rb','config/environment.rb']
+  spec.files         = [
+    'config/environment.rb',
+    'lib/git_undo.rb',
+    'lib/git_undo/git_manager.rb',
+    'lib/git_undo/git_reverser.rb',
+    'lib/git_undo/git_setup.rb'
+  ]
   spec.executables   << 'git-undo'
   spec.require_paths = ["lib"]
 

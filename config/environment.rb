@@ -1,1 +1,1 @@
-require_relative '../lib/git_undo/git_manager.rb'
+require_relative '../lib/git_undo.rb'
