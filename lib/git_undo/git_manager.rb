@@ -52,7 +52,7 @@ class GitManager
     when 'add'
       reverser.reverse_add
     when 'commit'
-      referser.reverse_commit
+      reverser.reverse_commit
     when 'merge'
       reverser.reverse_merge
     when 'checkout','co'
@@ -76,5 +76,4 @@ class GitManager
       end
     end
   end
-
 end
