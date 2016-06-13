@@ -1,5 +1,3 @@
-require 'pry'
-
 class GitManager
   def initialize(history_file)
     @history_file = history_file
