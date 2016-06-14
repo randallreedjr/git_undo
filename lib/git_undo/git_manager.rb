@@ -26,16 +26,10 @@ class GitManager
   end
 
   def last_command
-    last = ''
-    index = @command_list.length - 1
-    while last.empty? && index >= 0
-      command = parse_command(@command_list[index])[:action]
-      if GitReverser::VALID_COMMANDS.include?(command)
-        last = @command_list[index]
-      end
-      index -= 1
+    @command_list.reverse.detect do |raw_command|
+      command = parse_command(raw_command)[:action]
+      GitReverser::VALID_COMMANDS.include?(command)
     end
-    return last
   end
 
   def parse_command(command)
