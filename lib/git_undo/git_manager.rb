@@ -17,7 +17,7 @@ class GitManager
   def get_commands
     File.open(@history_file) do |file|
       file.each do |line|
-        # find last git command
+        # find all git commands
         if /\Agit / =~ line
           @command_list << line.chomp
         end

@@ -36,7 +36,7 @@ class GitSetup
 
     file.readlines.each do |line|
       if /\A[\s]*alias/.match line
-        if /\A[\s]*alias gitundo="HISTFILE=\$HISTFILE gitundo"\n\z/.match line
+        if /\A[\s]*alias git-undo="HISTFILE=\$HISTFILE git-undo"\n\z/.match line
           alias_exists = true
         end
       end
